@@ -26,9 +26,9 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import com.example.android.uamp.media.extensions.*
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.PlaybackParameters
+import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.upstream.DataSource
 
@@ -37,8 +37,8 @@ import com.google.android.exoplayer2.upstream.DataSource
  */
 class UampPlaybackPreparer(
 //        private val musicSource: MusicSource,
-    private val exoPlayer: ExoPlayer,
-    private val dataSourceFactory: DataSource.Factory
+        private val exoPlayer: SimpleExoPlayer,
+        private val dataSourceFactory: DataSource.Factory
 ) : MediaSessionConnector.PlaybackPreparer {
     /**
      * UAMP supports preparing (and playing) from search, as well as media ID, so those
@@ -95,6 +95,14 @@ class UampPlaybackPreparer(
         exoPlayer.playbackParameters = PlaybackParameters(speed)
     }
 
+    private fun setEarpieceStreamType() {
+        exoPlayer.audioAttributes = AudioAttributes.Builder().setUsage(C.USAGE_VOICE_COMMUNICATION).setContentType(C.CONTENT_TYPE_SPEECH).build()
+    }
+
+    private fun setSpeakerStreamType() {
+        exoPlayer.audioAttributes = AudioAttributes.Builder().setUsage(C.USAGE_MEDIA).setContentType(C.CONTENT_TYPE_MUSIC).build()
+    }
+
     /**
      * Handles callbacks to both [MediaSessionCompat.Callback.onPrepareFromSearch]
      * *AND* [MediaSessionCompat.Callback.onPlayFromSearch] when using [MediaSessionConnector].
@@ -129,6 +137,8 @@ class UampPlaybackPreparer(
     ) {
         when (command) {
             COMMAND_SPEED -> setSpeed(extras?.getFloat(COMMAND_SPEED, 1F) ?: 1F)
+            EARPIECE_STREAM -> setEarpieceStreamType()
+            SPEAKER_STREAM -> setSpeakerStreamType()
         }
     }
 
@@ -144,6 +154,8 @@ class UampPlaybackPreparer(
 //            musicSource.filter { it.album == item.album }.sortedBy { it.trackNumber }
     companion object {
         const val COMMAND_SPEED = "speed"
+        const val EARPIECE_STREAM = "set_earpiece_stream_type"
+        const val SPEAKER_STREAM = "set_speaker_stream_type"
     }
 }
 

@@ -84,10 +84,10 @@ class MusicService : MediaBrowserServiceCompat() {
         .build()
 
     // Wrap a SimpleExoPlayer with a decorator to handle audio focus for us.
-    private val exoPlayer: ExoPlayer by lazy {
+    private val exoPlayer: SimpleExoPlayer by lazy {
         ExoPlayerFactory.newSimpleInstance(this).apply {
             setAudioAttributes(_audioAttributes, true)
-            repeatMode = Player.REPEAT_MODE_ALL
+            repeatMode = Player.REPEAT_MODE_OFF
         }
     }
 

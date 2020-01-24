@@ -51,6 +51,8 @@ object Player : IPlayer {
     override fun prev() = playerImpl.prev()
     override fun togglePlayPause() = playerImpl.togglePlayPause()
     override fun seekTo(millis: Long) = playerImpl.seekTo(millis)
+    override fun setEarpieceStreamType() = playerImpl.setEarpieceStreamType()
+    override fun setSpeakerStreamType() = playerImpl.setSpeakerStreamType()
 }
 
 private class PlayerImpl(private val appContext: Context) : IPlayer {
@@ -201,6 +203,18 @@ private class PlayerImpl(private val appContext: Context) : IPlayer {
     override fun seekTo(millis: Long) {
         controls {
             seekTo(millis)
+        }
+    }
+
+    override fun setEarpieceStreamType() {
+        mediaController?.apply {
+            sendCommand(UampPlaybackPreparer.EARPIECE_STREAM, Bundle(), null)
+        }
+    }
+
+    override fun setSpeakerStreamType() {
+        mediaController?.apply {
+            sendCommand(UampPlaybackPreparer.SPEAKER_STREAM, Bundle(), null)
         }
     }
 
