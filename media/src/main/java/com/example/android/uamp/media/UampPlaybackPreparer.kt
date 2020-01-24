@@ -127,7 +127,7 @@ class UampPlaybackPreparer(
 
     override fun onPrepareFromUri(uri: Uri?, extras: Bundle?) = Unit
 
-    override fun getCommands(): Array<String>? = arrayOf(COMMAND_SPEED)
+    override fun getCommands(): Array<String>? = arrayOf(COMMAND_SPEED, EARPIECE_STREAM, SPEAKER_STREAM)
 
     override fun onCommand(
         player: Player?,
