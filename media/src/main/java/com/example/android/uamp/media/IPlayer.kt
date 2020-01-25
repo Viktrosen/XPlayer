@@ -24,6 +24,7 @@ interface IPlayer {
     fun seekTo(millis: Long)
     fun setEarpieceStreamType()
     fun setSpeakerStreamType()
+    fun setCurrentTrackAndPlay(pos: Int)
 
     data class Track @JvmOverloads constructor(
         val id: String,

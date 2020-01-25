@@ -53,6 +53,7 @@ object Player : IPlayer {
     override fun seekTo(millis: Long) = playerImpl.seekTo(millis)
     override fun setEarpieceStreamType() = playerImpl.setEarpieceStreamType()
     override fun setSpeakerStreamType() = playerImpl.setSpeakerStreamType()
+    override fun setCurrentTrackAndPlay(pos: Int) = playerImpl.setCurrentTrackAndPlay(pos)
 }
 
 private class PlayerImpl(private val appContext: Context) : IPlayer {
@@ -215,6 +216,26 @@ private class PlayerImpl(private val appContext: Context) : IPlayer {
     override fun setSpeakerStreamType() {
         mediaController?.apply {
             sendCommand(UampPlaybackPreparer.SPEAKER_STREAM, Bundle(), null)
+        }
+    }
+
+    override fun setCurrentTrackAndPlay(pos: Int) {
+        controls {
+            playList?.takeIf { it.size > 1 }?.also { list ->
+                _liveDataPlayNow.postValue(list[pos])
+
+                val extra = if (state == State.STOP) null else Bundle().apply {
+                    putBoolean("needSeekTo", true)
+                }
+                when (state) {
+                    State.PLAY, State.STOP -> {
+                        playFromMediaId(list[pos].id, extra)
+                    }
+                    State.PAUSE -> {
+                        prepareFromMediaId(list[pos].id, extra)
+                    }
+                }
+            }
         }
     }
 
