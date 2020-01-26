@@ -111,7 +111,7 @@ private class PlayerImpl(private val appContext: Context) : IPlayer {
                         putBoolean("needSeekTo", true)
                     }
                     when (state) {
-                        State.PLAY -> {
+                        State.PLAY, State.STOP -> {
                             playFromMediaId(playNowIdNew, extra)
                         }
                         State.PAUSE -> {
