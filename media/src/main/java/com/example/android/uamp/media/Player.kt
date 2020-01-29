@@ -111,7 +111,7 @@ private class PlayerImpl(private val appContext: Context) : IPlayer {
                         putBoolean("needSeekTo", true)
                     }
                     when (state) {
-                        State.PLAY, State.STOP -> {
+                        State.PLAY -> {
                             playFromMediaId(playNowIdNew, extra)
                         }
                         State.PAUSE -> {
@@ -228,11 +228,15 @@ private class PlayerImpl(private val appContext: Context) : IPlayer {
                     putBoolean("needSeekTo", true)
                 }
                 when (state) {
-                    State.PLAY, State.STOP -> {
+                    State.PLAY-> {
                         playFromMediaId(list[pos].id, extra)
                     }
                     State.PAUSE -> {
                         prepareFromMediaId(list[pos].id, extra)
+                    }
+                    State.STOP -> {
+                        prepareFromMediaId(list[pos].id, extra)
+                        playFromMediaId(list[pos].id, extra)
                     }
                 }
             }
