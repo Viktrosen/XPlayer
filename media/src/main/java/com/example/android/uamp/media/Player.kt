@@ -221,7 +221,7 @@ private class PlayerImpl(private val appContext: Context) : IPlayer {
 
     override fun setCurrentTrackAndPlay(pos: Int) {
         controls {
-            playList?.takeIf { it.size > 1 }?.also { list ->
+            playList?.takeIf { it.size > 0 }?.also { list ->
                 _liveDataPlayNow.postValue(list[pos])
 
                 val extra = if (state == State.STOP) null else Bundle().apply {
