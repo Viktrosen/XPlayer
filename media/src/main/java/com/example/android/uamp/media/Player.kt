@@ -14,6 +14,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.media.MediaBrowserServiceCompat
 import com.example.android.uamp.media.IPlayer.State
 import com.example.android.uamp.media.extensions.duration
+import com.example.android.uamp.media.extensions.flag
 
 @SuppressLint("StaticFieldLeak")
 object Player : IPlayer {
@@ -42,6 +43,7 @@ object Player : IPlayer {
         set(value) {
             playerImpl.playList = value
         }
+    override var mediaMetadataList: List<MediaMetadataCompat>? = null
 
     override fun play() = playerImpl.play()
     override fun start(mediaId: String) = playerImpl.start(mediaId)
@@ -54,9 +56,21 @@ object Player : IPlayer {
     override fun setEarpieceStreamType() = playerImpl.setEarpieceStreamType()
     override fun setSpeakerStreamType() = playerImpl.setSpeakerStreamType()
     override fun setCurrentTrackAndPlay(pos: Int) = playerImpl.setCurrentTrackAndPlay(pos)
+
+    val instance by lazy(LazyThreadSafetyMode.SYNCHRONIZED) { Player }
+
+    val mediaItems
+        get() = mediaMetadataList?.map {
+            MediaBrowserCompat.MediaItem(
+                    it.description,
+                    it.flag
+            )
+        }
+
 }
 
 private class PlayerImpl(private val appContext: Context) : IPlayer {
+    override var mediaMetadataList: List<MediaMetadataCompat>? = null
     private val mediaBrowserConnectionCallback = MediaBrowserConnectionCallback()
     private val mediaBrowser = MediaBrowserCompat(
         appContext,
@@ -102,6 +116,7 @@ private class PlayerImpl(private val appContext: Context) : IPlayer {
             } else {
                 _liveDataPlayNow.postValue(value?.getOrNull(0))
             }
+            mediaMetadataList = value?.map { it.toMediaMetadata() }
             _liveDataPlayList.postValue(value)
 
             controls {

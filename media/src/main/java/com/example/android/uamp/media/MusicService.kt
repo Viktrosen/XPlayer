@@ -206,31 +206,31 @@ class MusicService : MediaBrowserServiceCompat() {
     ) {
         Log.d("rom", "onLoadChildren: $parentMediaId")
         // If the media source is ready, the results will be set synchronously here.
-//        val resultsSent = mediaSource.whenReady { successfullyInitialized ->
-//            if (successfullyInitialized) {
-////                val children = browseTree[parentMediaId]?.map { item ->
-////                    MediaItem(item.description, item.flag)
-////                }
-//                val children = mediaSource.map { item ->
+        /*val resultsSent = mediaSource.whenReady { successfullyInitialized ->
+            if (successfullyInitialized) {
+//                val children = browseTree[parentMediaId]?.map { item ->
 //                    MediaItem(item.description, item.flag)
 //                }
-//        val children = com.example.android.uamp.media.Player.instance.mediaItems
-//        result.sendResult(children)
-//        Log.d("rom", "sendResult: $children")
-//            } else {
-//                result.sendError(null)
-//            }
-//        }
-//
-//        // If the results are not ready, the service must "detach" the results before
-//        // the method returns. After the source is ready, the lambda above will run,
-//        // and the caller will be notified that the results are ready.
-//        //
-//        // See [MediaItemFragmentViewModel.subscriptionCallback] for how this is passed to the
-//        // UI/displayed in the [RecyclerView].
-//        if (!resultsSent) {
-//            result.detach()
-//        }
+                val children = mediaSource.map { item ->
+                    MediaItem(item.description, item.flag)
+                }*/
+        val children = com.example.android.uamp.media.Player.instance.mediaItems
+        result.sendResult(children)
+        Log.d("rom", "sendResult: $children")
+           /* } else {
+                result.sendError(null)
+            }
+        }*/
+
+        // If the results are not ready, the service must "detach" the results before
+        // the method returns. After the source is ready, the lambda above will run,
+        // and the caller will be notified that the results are ready.
+        //
+        // See [MediaItemFragmentViewModel.subscriptionCallback] for how this is passed to the
+        // UI/displayed in the [RecyclerView].
+        // if (!resultsSent) {
+        //     result.detach()
+        // }
     }
 
     /**

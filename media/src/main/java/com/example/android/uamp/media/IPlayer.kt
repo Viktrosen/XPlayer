@@ -1,6 +1,7 @@
 package com.example.android.uamp.media
 
 import android.graphics.Bitmap
+import android.support.v4.media.MediaMetadataCompat
 import androidx.lifecycle.LiveData
 import java.util.*
 
@@ -14,6 +15,7 @@ interface IPlayer {
     val currentPosition: Long
     var speed: Float
     var playList: List<Track>?
+    var mediaMetadataList: List<MediaMetadataCompat>?
     fun play()
     fun start(mediaId: String)
     fun pause()

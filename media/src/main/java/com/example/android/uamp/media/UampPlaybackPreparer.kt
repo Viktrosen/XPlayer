@@ -161,7 +161,7 @@ class UampPlaybackPreparer(
 
 private const val TAG = "MediaSessionHelper"
 
-private fun IPlayer.Track.toMediaMetadata(
+internal fun IPlayer.Track.toMediaMetadata(
 ): MediaMetadataCompat {
     return MediaMetadataCompat.Builder().also {
         it.id = id
