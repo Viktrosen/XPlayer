@@ -13,8 +13,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.media.MediaBrowserServiceCompat
 import com.example.android.uamp.media.IPlayer.State
-import com.example.android.uamp.media.extensions.duration
 import com.example.android.uamp.media.extensions.flag
+import com.example.android.uamp.media.extensions.mediaUri
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import nl.bravobit.ffmpeg.ExecuteBinaryResponseHandler
+import nl.bravobit.ffmpeg.FFprobe
+import org.json.JSONObject
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
+import kotlin.math.roundToLong
 
 @SuppressLint("StaticFieldLeak")
 object Player : IPlayer {
@@ -86,9 +96,8 @@ private class PlayerImpl(private val appContext: Context) : IPlayer {
     override val liveDataPlayNow: LiveData<IPlayer.Track> get() = _liveDataPlayNow
     private val _liveDataPlayList = MutableLiveData<List<IPlayer.Track>>()
     override val liveDataPlayList: LiveData<List<IPlayer.Track>> get() = _liveDataPlayList
-    override val trackDuration: Long
-        get() = if (_liveDataPlayerState.value == State.STOP) -1L else mediaController?.metadata?.duration
-            ?: -1L
+    override val trackDuration: Deferred<Long>
+        get() = if (_liveDataPlayerState.value == State.STOP) GlobalScope.async { -1L } else GlobalScope.async { getDuration() }
     override val currentPosition: Long
         get() = if (_liveDataPlayerState.value == State.STOP) 0L else mediaController?.playbackState?.position
             ?: 0L
@@ -261,6 +270,28 @@ private class PlayerImpl(private val appContext: Context) : IPlayer {
     private fun controls(body: MediaControllerCompat.TransportControls.() -> Unit) {
         mediaController?.also {
             body(it.transportControls)
+        }
+    }
+
+    private suspend fun getDuration(): Long = suspendCoroutine {
+        if (!FFprobe.getInstance(appContext).isSupported)
+            throw UnsupportedOperationException("FFprobe is not supported on this device")
+        val ffprobe = FFprobe.getInstance(appContext)
+        mediaController?.metadata?.mediaUri?.path?.also { path ->
+            ffprobe.execute(arrayOf("-i", path, "-v", "quiet", "-print_format", "json", "-show_format", "-show_streams", "-hide_banner"), object : ExecuteBinaryResponseHandler() {
+                override fun onFailure(message: String) {
+                    it.resumeWithException(Exception("FFprobe failure: $message"))
+                }
+
+                override fun onSuccess(message: String) {
+                    val duration = JSONObject(message).getJSONObject("format").getString("duration")
+                    it.resume((duration.toFloat() * 1000).roundToLong())
+                }
+
+                override fun onStart() {}
+                override fun onProgress(message: String) {}
+                override fun onFinish() {}
+            })
         }
     }
 

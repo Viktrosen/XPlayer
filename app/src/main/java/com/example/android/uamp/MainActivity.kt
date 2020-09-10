@@ -12,6 +12,8 @@ import androidx.lifecycle.Observer
 import com.example.android.uamp.media.IPlayer
 import com.example.android.uamp.media.Player
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.net.URL
 
 class MainActivity : AppCompatActivity() {
@@ -39,10 +41,12 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onTick(millisUntilFinished: Long) {
-                log.appendLine(
-                    "progress",
-                    "${player.currentPosition}/${player.trackDuration}, speed=${player.speed}"
-                )
+                GlobalScope.launch {
+                    log.appendLine(
+                            "progress",
+                            "${player.currentPosition}/${player.trackDuration.await()}, speed=${player.speed}"
+                    )
+                }
             }
 
         }
@@ -52,6 +56,15 @@ class MainActivity : AppCompatActivity() {
                 val artUri =
                     "https://storage.googleapis.com/uamp/The_Kyoto_Connection_-_Wake_Up/art.jpg"
                 val art = BitmapFactory.decodeStream(URL(artUri).openStream())
+                /*IPlayer.Track(
+                        "id_1",
+                        Uri.fromFile(File("storage/emulated/0/Music/Imagine Dragons - I'm So Sorry.mp3")).path ?: "",
+                        "Intro - The Way Of Waking Up (feat. Alan Watts)",
+                        "The Kyoto Connection",
+                        "Wake Up",
+                        artUri,
+                        (getDrawable(com.example.android.uamp.media.R.drawable.player_default_art) as BitmapDrawable).bitmap
+                    )*/
                 player.playList = listOf(
                     IPlayer.Track(
                         "id_1",
