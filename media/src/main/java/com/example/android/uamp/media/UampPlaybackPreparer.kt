@@ -53,7 +53,7 @@ class UampPlaybackPreparer(
 //                PlaybackStateCompat.ACTION_PREPARE_FROM_SEARCH or
 //                PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH
 
-    override fun onPrepare() = Unit
+    override fun onPrepare(p0: Boolean) = Unit
 
     /**
      * Handles callbacks to both [MediaSessionCompat.Callback.onPrepareFromMediaId]
@@ -65,7 +65,7 @@ class UampPlaybackPreparer(
      * [MediaSessionCompat.Callback.onPlayFromMediaId], otherwise it's
      * [MediaSessionCompat.Callback.onPrepareFromMediaId].
      */
-    override fun onPrepareFromMediaId(mediaId: String?, extras: Bundle?) {
+    override fun onPrepareFromMediaId(mediaId: String, p1: Boolean, extras: Bundle?) {
         val metadataList =
             com.example.android.uamp.media.Player.playList?.map { it.toMediaMetadata() }
                 ?: emptyList()
@@ -92,15 +92,23 @@ class UampPlaybackPreparer(
     }
 
     private fun setSpeed(speed: Float) {
-        exoPlayer.playbackParameters = PlaybackParameters(speed)
+        exoPlayer.setPlaybackParameters(PlaybackParameters(speed))
     }
 
     private fun setEarpieceStreamType() {
-        exoPlayer.audioAttributes = AudioAttributes.Builder().setUsage(C.USAGE_VOICE_COMMUNICATION).setContentType(C.CONTENT_TYPE_SPEECH).build()
+        exoPlayer.setAudioAttributes(
+                AudioAttributes.Builder()
+                        .setUsage(C.USAGE_VOICE_COMMUNICATION)
+                        .setContentType(C.CONTENT_TYPE_SPEECH).build(),
+                true)
     }
 
     private fun setSpeakerStreamType() {
-        exoPlayer.audioAttributes = AudioAttributes.Builder().setUsage(C.USAGE_MEDIA).setContentType(C.CONTENT_TYPE_MUSIC).build()
+        exoPlayer.setAudioAttributes(
+                AudioAttributes.Builder()
+                        .setUsage(C.USAGE_MEDIA)
+                        .setContentType(C.CONTENT_TYPE_MUSIC).build(),
+                true)
     }
 
     /**
@@ -115,7 +123,7 @@ class UampPlaybackPreparer(
      *
      * For details on how search is handled, see [AbstractMusicSource.search].
      */
-    override fun onPrepareFromSearch(query: String?, extras: Bundle?) {
+    override fun onPrepareFromSearch(query: String, p1: Boolean, extras: Bundle?) {
 //        musicSource.whenReady {
 //            val metadataList = musicSource.search(query ?: "", extras ?: Bundle.EMPTY)
 //            if (metadataList.isNotEmpty()) {
@@ -125,21 +133,17 @@ class UampPlaybackPreparer(
 //        }
     }
 
-    override fun onPrepareFromUri(uri: Uri?, extras: Bundle?) = Unit
+    override fun onPrepareFromUri(uri: Uri, p1: Boolean, extras: Bundle?) = Unit
 
-    override fun getCommands(): Array<String>? = arrayOf(COMMAND_SPEED, EARPIECE_STREAM, SPEAKER_STREAM)
+    fun getCommands(): Array<String> = arrayOf(COMMAND_SPEED, EARPIECE_STREAM, SPEAKER_STREAM)
 
-    override fun onCommand(
-        player: Player?,
-        command: String?,
-        extras: Bundle?,
-        cb: ResultReceiver?
-    ) {
+    override fun onCommand(player: Player, p1: ControlDispatcher, command: String, extras: Bundle?, cb: ResultReceiver?): Boolean {
         when (command) {
             COMMAND_SPEED -> setSpeed(extras?.getFloat(COMMAND_SPEED, 1F) ?: 1F)
             EARPIECE_STREAM -> setEarpieceStreamType()
             SPEAKER_STREAM -> setSpeakerStreamType()
         }
+        return true
     }
 
     //    /**

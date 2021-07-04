@@ -150,7 +150,8 @@ class MusicService : MediaBrowserServiceCompat() {
                 dataSourceFactory
             )
 
-            it.setPlayer(exoPlayer, playbackPreparer)
+            it.setPlayer(exoPlayer)
+            it.setPlaybackPreparer(playbackPreparer)
             it.setQueueNavigator(UampQueueNavigator(mediaSession))
         }
     }
