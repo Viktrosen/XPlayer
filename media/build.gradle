@@ -51,7 +51,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.8"
 
     implementation 'androidx.lifecycle:lifecycle-livedata:2.2.0'
-    implementation 'com.github.bravobit:FFmpeg-Android:master-SNAPSHOT'
+    implementation 'com.github.tridipk:FFmpeg-Android:1.2.1'
 
     api 'androidx.media:media:1.1.0'
 
