@@ -3,7 +3,6 @@ package com.example.android.uamp.media
 import android.graphics.Bitmap
 import android.support.v4.media.MediaMetadataCompat
 import androidx.lifecycle.LiveData
-import kotlinx.coroutines.Deferred
 import java.util.*
 
 interface IPlayer {
@@ -12,7 +11,7 @@ interface IPlayer {
     val liveDataPlayerState: LiveData<State>
     val liveDataPlayNow: LiveData<Track>
     val liveDataPlayList: LiveData<List<Track>>
-    val trackDuration: Deferred<Long>
+    val trackDuration: Long
     val currentPosition: Long
     var speed: Float
     var playList: List<Track>?

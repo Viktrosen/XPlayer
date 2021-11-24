@@ -12,8 +12,6 @@ import androidx.lifecycle.Observer
 import com.example.android.uamp.media.IPlayer
 import com.example.android.uamp.media.Player
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.net.URL
 
 class MainActivity : AppCompatActivity() {
@@ -41,12 +39,10 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onTick(millisUntilFinished: Long) {
-                GlobalScope.launch {
-                    log.appendLine(
-                            "progress",
-                            "${player.currentPosition}/${player.trackDuration.await()}, speed=${player.speed}"
-                    )
-                }
+                log.appendLine(
+                        "progress",
+                        "${player.currentPosition}/${player.trackDuration}, speed=${player.speed}"
+                )
             }
 
         }
