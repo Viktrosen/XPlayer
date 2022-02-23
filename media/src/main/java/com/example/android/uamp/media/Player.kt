@@ -87,8 +87,7 @@ private class PlayerImpl(private val appContext: Context) : IPlayer {
     private val _liveDataPlayList = MutableLiveData<List<IPlayer.Track>>()
     override val liveDataPlayList: LiveData<List<IPlayer.Track>> get() = _liveDataPlayList
     override val trackDuration: Long
-        get() = if (_liveDataPlayerState.value == State.STOP) -1L else mediaController?.metadata?.duration
-                ?: -1L
+        get() = mediaController?.metadata?.duration ?: -1L
     override val currentPosition: Long
         get() = if (_liveDataPlayerState.value == State.STOP) 0L else mediaController?.playbackState?.position
             ?: 0L
