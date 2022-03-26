@@ -100,7 +100,7 @@ class UampPlaybackPreparer(
                 AudioAttributes.Builder()
                         .setUsage(C.USAGE_VOICE_COMMUNICATION)
                         .setContentType(C.CONTENT_TYPE_SPEECH).build(),
-                true)
+                false)
     }
 
     private fun setSpeakerStreamType() {
