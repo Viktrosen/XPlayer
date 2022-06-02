@@ -137,7 +137,8 @@ class UampPlaybackPreparer(
 
     fun getCommands(): Array<String> = arrayOf(COMMAND_SPEED, EARPIECE_STREAM, SPEAKER_STREAM)
 
-    override fun onCommand(player: Player, p1: ControlDispatcher, command: String, extras: Bundle?, cb: ResultReceiver?): Boolean {
+
+    override fun onCommand(player: Player, command: String, extras: Bundle?, cb: ResultReceiver?): Boolean {
         when (command) {
             COMMAND_SPEED -> setSpeed(extras?.getFloat(COMMAND_SPEED, 1F) ?: 1F)
             EARPIECE_STREAM -> setEarpieceStreamType()

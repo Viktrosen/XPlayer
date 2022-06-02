@@ -85,10 +85,9 @@ class MusicService : MediaBrowserServiceCompat() {
 
     // Wrap a SimpleExoPlayer with a decorator to handle audio focus for us.
     private val exoPlayer: SimpleExoPlayer by lazy {
-        ExoPlayerFactory.newSimpleInstance(this).apply {
+        SimpleExoPlayer.Builder(this).apply {
             setAudioAttributes(_audioAttributes, true)
-            repeatMode = Player.REPEAT_MODE_OFF
-        }
+        }.build()
     }
 
     override fun onCreate() {
@@ -346,7 +345,7 @@ private class UampQueueNavigator(
     private val window = Timeline.Window()
     override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat =
         player.currentTimeline
-            .getWindow(windowIndex, window, true).tag as MediaDescriptionCompat
+            .getWindow(windowIndex, window, 1).tag as MediaDescriptionCompat
 }
 
 /**
