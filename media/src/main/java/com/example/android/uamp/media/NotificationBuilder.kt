@@ -24,6 +24,7 @@ import android.os.Build
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat.*
+import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.media.app.NotificationCompat.MediaStyle
@@ -42,6 +43,18 @@ const val NOW_PLAYING_NOTIFICATION: Int = 0xb339
 class NotificationBuilder(private val context: Context) {
     private val platformNotificationManager: NotificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+    private val rewindAction = NotificationCompat.Action(
+        R.drawable.player_icon_rewind,
+        context.getString(R.string.notification_rewind),
+        MediaButtonReceiver.buildMediaButtonPendingIntent(context, ACTION_REWIND)
+    )
+
+    private val fastForwardAction = NotificationCompat.Action(
+        R.drawable.player_icon_forward,
+        context.getString(R.string.notification_fast_forward),
+        MediaButtonReceiver.buildMediaButtonPendingIntent(context, ACTION_FAST_FORWARD)
+    )
 
     private val skipToPreviousAction = NotificationCompat.Action(
         R.drawable.player_icon_previous,
@@ -76,13 +89,19 @@ class NotificationBuilder(private val context: Context) {
         val playbackState = controller.playbackState
 
         val builder = NotificationCompat.Builder(context, NOW_PLAYING_CHANNEL)
+        val mediaStyle = MediaStyle()
+            .setCancelButtonIntent(stopPendingIntent)
+            .setShowActionsInCompactView(1,2,3)
+            .setMediaSession(sessionToken)
+            .setShowCancelButton(true)
 
         // Only add actions for skip back, play/pause, skip forward, based on what's enabled.
         var playPauseIndex = 0
+        builder.addAction(rewindAction)
         if (playbackState.isSkipToPreviousEnabled) {
             builder.addAction(skipToPreviousAction)
             ++playPauseIndex
-        }
+        } else mediaStyle.setShowActionsInCompactView(2,3)
         if (playbackState.isPlaying) {
             builder.addAction(pauseAction)
         } else if (playbackState.isPlayEnabled) {
@@ -90,13 +109,8 @@ class NotificationBuilder(private val context: Context) {
         }
         if (playbackState.isSkipToNextEnabled) {
             builder.addAction(skipToNextAction)
-        }
-
-        val mediaStyle = MediaStyle()
-            .setCancelButtonIntent(stopPendingIntent)
-            .setMediaSession(sessionToken)
-            .setShowActionsInCompactView(playPauseIndex)
-            .setShowCancelButton(true)
+        } else mediaStyle.setShowActionsInCompactView(1,2)
+        builder.addAction(fastForwardAction)
 
         return builder.setContentIntent(controller.sessionActivity)
             .setContentText(description.subtitle)
