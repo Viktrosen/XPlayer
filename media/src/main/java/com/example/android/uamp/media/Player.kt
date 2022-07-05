@@ -140,7 +140,7 @@ private class PlayerImpl(private val appContext: Context) : IPlayer {
 
     override fun play() {
         controls {
-            if (state == State.STOP) {
+            if (state == State.STOP || state == State.ERROR) {
                 val mediaId = liveDataPlayNow.value?.id ?: playList?.getOrNull(0)?.id
                 if (mediaId != null) {
                     start(mediaId)
