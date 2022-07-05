@@ -20,7 +20,6 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.graphics.Color
 import android.os.Build
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -121,7 +120,6 @@ class NotificationBuilder(private val context: Context) {
             .setOnlyAlertOnce(true)
             .setSmallIcon(R.drawable.player_icon_notification)
             .setStyle(mediaStyle)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .build()
     }
