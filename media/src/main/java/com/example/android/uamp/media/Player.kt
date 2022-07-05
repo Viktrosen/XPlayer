@@ -210,7 +210,7 @@ private class PlayerImpl(private val appContext: Context) : IPlayer {
     override fun togglePlayPause() {
         when (state) {
             State.PLAY -> pause()
-            State.PAUSE, State.STOP -> play()
+            State.PAUSE, State.STOP, State.ERROR -> play()
             else -> Unit
         }
     }
