@@ -131,6 +131,9 @@ private class PlayerImpl(private val appContext: Context) : IPlayer {
                         State.PAUSE -> {
                             prepareFromMediaId(playNowIdNew, extra)
                         }
+                        State.STOP -> {
+                            prepareFromMediaId(playNowIdNew, extra)
+                        }
                     }
                 } else {
                     stop()
