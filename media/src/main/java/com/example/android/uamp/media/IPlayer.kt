@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.support.v4.media.MediaMetadataCompat
 import androidx.lifecycle.LiveData
 import java.util.*
+import kotlin.collections.ArrayList
 
 interface IPlayer {
     enum class State { PLAY, PAUSE, STOP, PREPARING, ERROR }

@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
                         artUri,
                         (getDrawable(com.example.android.uamp.media.R.drawable.player_default_art) as BitmapDrawable).bitmap
                     )*/
-                player.playList = listOf(
+                player.playList = arrayListOf(
                     IPlayer.Track(
                         "id_1",
                         "https://storage.googleapis.com/uamp/The_Kyoto_Connection_-_Wake_Up/01_-_Intro_-_The_Way_Of_Waking_Up_feat_Alan_Watts.mp3",
@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity() {
         next.setOnClickListener { player.next() }
         stop.setOnClickListener { player.stop() }
         speed.setOnClickListener { player.speed = if (player.speed == 1F) 2F else 1f }
-        revert.setOnClickListener { player.playList = player.playList?.reversed() }
+        revert.setOnClickListener { player.playList = player.playList?.reversed() as ArrayList<IPlayer.Track>}
     }
 
     override fun onDestroy() {

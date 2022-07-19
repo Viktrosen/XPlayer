@@ -126,13 +126,16 @@ private class PlayerImpl(private val appContext: Context) : IPlayer {
                     }
                     when (state) {
                         State.PLAY -> {
+                            prepareFromMediaId(playNowIdNew, extra)
                             playFromMediaId(playNowIdNew, extra)
                         }
                         State.PAUSE -> {
                             prepareFromMediaId(playNowIdNew, extra)
+                            playFromMediaId(playNowIdNew, extra)
                         }
                         State.STOP -> {
                             prepareFromMediaId(playNowIdNew, extra)
+                            playFromMediaId(playNowIdNew, extra)
                         }
                     }
                 } else {
@@ -164,6 +167,7 @@ private class PlayerImpl(private val appContext: Context) : IPlayer {
 
     override fun start(mediaId: String) {
         controls {
+            prepareFromMediaId(mediaId, null)
             playFromMediaId(mediaId, null)
         }
     }
@@ -250,6 +254,7 @@ private class PlayerImpl(private val appContext: Context) : IPlayer {
                     }
                     State.PAUSE -> {
                         prepareFromMediaId(list[pos].id, extra)
+                        playFromMediaId(list[pos].id, extra)
                     }
                     State.STOP -> {
                         prepareFromMediaId(list[pos].id, extra)
