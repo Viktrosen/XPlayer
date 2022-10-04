@@ -27,6 +27,8 @@ import android.support.v4.media.session.PlaybackStateCompat.*
 import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationCompat.FOREGROUND_SERVICE_DEFERRED
+import androidx.core.app.NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE
 import androidx.media.app.NotificationCompat.MediaStyle
 import androidx.media.session.MediaButtonReceiver
 import com.example.android.uamp.media.extensions.isPlayEnabled
@@ -111,6 +113,8 @@ class NotificationBuilder(private val context: Context) {
             builder.addAction(skipToNextAction)
         } else mediaStyle.setShowActionsInCompactView(1,2)
         builder.addAction(fastForwardAction)
+        if (shouldSetForeground())
+            builder.foregroundServiceBehavior = FOREGROUND_SERVICE_IMMEDIATE
 
         return builder.setContentIntent(controller.sessionActivity)
             .setContentText(description.subtitle)
@@ -126,6 +130,10 @@ class NotificationBuilder(private val context: Context) {
 
     private fun shouldCreateNowPlayingChannel() =
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !nowPlayingChannelExists()
+
+    private fun shouldSetForeground() =
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun nowPlayingChannelExists() =

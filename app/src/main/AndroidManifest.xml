@@ -29,6 +29,7 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".MainActivity"
+            android:exported="true"
             android:label="Test Player">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

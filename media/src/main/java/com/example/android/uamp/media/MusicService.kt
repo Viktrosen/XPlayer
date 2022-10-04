@@ -101,7 +101,7 @@ class MusicService : MediaBrowserServiceCompat() {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
         }
         val sessionActivityPendingIntent =
-            sessionIntent?.let { PendingIntent.getActivity(this, 0, it, 0) }
+            sessionIntent?.let { PendingIntent.getActivity(this, 0, it, PendingIntent.FLAG_IMMUTABLE) }
 
         // Create a new MediaSession.
         mediaSession = MediaSessionCompat(this, "MusicService")
@@ -251,7 +251,7 @@ class MusicService : MediaBrowserServiceCompat() {
      * remove the notification.
      */
     private fun removeNowPlayingNotification() {
-        stopForeground(true)
+        stopForeground(STOP_FOREGROUND_DETACH)
     }
 
     /**
@@ -291,7 +291,8 @@ class MusicService : MediaBrowserServiceCompat() {
 
             when (updatedState) {
                 PlaybackStateCompat.STATE_BUFFERING,
-                PlaybackStateCompat.STATE_PLAYING -> {
+                PlaybackStateCompat.STATE_PLAYING,
+                PlaybackStateCompat.STATE_PAUSED -> {
                     becomingNoisyReceiver.register()
 
                     /**
@@ -314,7 +315,7 @@ class MusicService : MediaBrowserServiceCompat() {
                     becomingNoisyReceiver.unregister()
 
                     if (isForegroundService) {
-                        stopForeground(false)
+                        stopForeground(STOP_FOREGROUND_DETACH)
                         isForegroundService = false
 
                         // If playback has ended, also stop the service.
